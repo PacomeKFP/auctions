@@ -1,0 +1,46 @@
+server
+├─ .env
+├─ README.md
+├─ logs
+├─ main.js
+├─ package-lock.json
+├─ package.json
+└─ src
+   ├─ app
+   │  ├─ interface
+   │  │  ├─ http
+   │  │  │  ├─ controllers
+   │  │  │  │  ├─ auctionController.js
+   │  │  │  │  ├─ bidController.js
+   │  │  │  │  └─ lotController.js
+   │  │  │  ├─ httpServer.js
+   │  │  │  ├─ middlewares
+   │  │  │  │  ├─ authenticationMiddleware.js
+   │  │  │  │  └─ validationMiddleware.js
+   │  │  │  └─ routers
+   │  │  │     ├─ auctionRouter.js
+   │  │  │     ├─ bidRouter.js
+   │  │  │     └─ lotRouter.js
+   │  │  └─ websocket
+   │  │     └─ socketServer.js
+   │  └─ sockets
+   ├─ config
+   │  └─ logger.js
+   ├─ domain
+   │  ├─ model
+   │  │  ├─ auction.js
+   │  │  ├─ bid.js
+   │  │  ├─ lot.js
+   │  │  └─ user.js
+   │  ├─ repository
+   │  │  ├─ auctionRepository.js
+   │  │  ├─ bidRepository.js
+   │  │  └─ lotrepository.js
+   │  └─ use-cases
+   │     ├─ manageAuctions.js
+   │     └─ placeBid.js
+   └─ infrastructure
+      ├─ Services
+      │  └─ GmailSevice.js
+      └─ database
+         └─ DatabaseConnexion.js

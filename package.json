@@ -1,0 +1,35 @@
+{
+  "name": "auction-module-backend",
+  "version": "0.0.1",
+  "description": "This is a module That will be use to manage Auctions. It implements the backend side ",
+  "main": "main.js",
+  "scripts": {
+    "dev":"nodemon main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PacomeKFP/auctions.git"
+  },
+  "keywords": [
+    "auctions",
+    "module",
+    "express",
+    "socket"
+  ],
+  "author": "Pacome Kengali Fegue",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PacomeKFP/auctions/issues"
+  },
+  "homepage": "https://github.com/PacomeKFP/auctions#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "joi": "^17.11.0",
+    "mongoose": "^8.0.2",
+    "nodemon": "^3.0.2",
+    "socket.io": "^4.7.2",
+    "winston": "^3.11.0"
+  }
+}
