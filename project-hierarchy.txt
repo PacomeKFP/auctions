@@ -1,29 +1,27 @@
 server
 ├─ .env
-├─ README.md
-├─ logs
-├─ main.js
+├─ .env.example 
 ├─ package-lock.json
 ├─ package.json
+├─ project-hierarchy.txt
 └─ src
    ├─ app
-   │  ├─ interface
-   │  │  ├─ http
-   │  │  │  ├─ controllers
-   │  │  │  │  ├─ auctionController.js
-   │  │  │  │  ├─ bidController.js
-   │  │  │  │  └─ lotController.js
-   │  │  │  ├─ httpServer.js
-   │  │  │  ├─ middlewares
-   │  │  │  │  ├─ authenticationMiddleware.js
-   │  │  │  │  └─ validationMiddleware.js
-   │  │  │  └─ routers
-   │  │  │     ├─ auctionRouter.js
-   │  │  │     ├─ bidRouter.js
-   │  │  │     └─ lotRouter.js
-   │  │  └─ websocket
-   │  │     └─ socketServer.js
-   │  └─ sockets
+   │  ├─ http
+   │  │  ├─ controllers
+   │  │  │  ├─ auctionController.js
+   │  │  │  ├─ bidController.js
+   │  │  │  └─ lotController.js
+   │  │  ├─ forms
+   │  │  ├─ httpServer.js
+   │  │  ├─ middlewares
+   │  │  │  ├─ authenticationMiddleware.js
+   │  │  │  └─ formValidationMiddleware.js
+   │  │  └─ routers
+   │  │     ├─ auctionRouter.js
+   │  │     ├─ bidRouter.js
+   │  │     └─ lotRouter.js
+   │  └─ websockets
+   │     └─ socketServer.js
    ├─ config
    │  └─ logger.js
    ├─ domain
@@ -43,4 +41,4 @@ server
       ├─ Services
       │  └─ GmailSevice.js
       └─ database
-         └─ DatabaseConnexion.js
+         └─ DatabaseConnection.js
