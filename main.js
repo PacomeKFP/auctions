@@ -23,7 +23,6 @@ databaseConnection.open().then(() => {
 
 // configuration for express HTTP server
 const { SERVER_PORT, APP_ROUTE_PREFIX } = process.env;
-
 const httpServer = new HttpServer(APP_ROUTE_PREFIX, SERVER_PORT);
 
 httpServer.launchServer(); // launching the server

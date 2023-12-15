@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const isEmail = require("validator/lib/isEmail");
+const uuidv4 = require("uuid").v4;
 
 const auctionSchema = new mongoose.Schema(
   {
@@ -9,8 +11,27 @@ const auctionSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    endDate: {
+    invitationsClosureDate: {
+      // date de fermeture des inscriptions
       type: Date,
+      required: true,
+    },
+    admin: {
+      // les informations sur l'administrateur
+      email: {
+        type: String,
+        required: true,
+        validator: [isEmail],
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+    },
+    code: {
+      // le code de la vente
+      type: String,
+      unique: true,
       required: true,
     },
     description: {
@@ -21,10 +42,32 @@ const auctionSchema = new mongoose.Schema(
       type: String,
     },
     status: {
+      // le status de la vente,[en attente -  en cours - terminée]
       type: String,
-      enum: ["PENDING", "INPROGRESS", "COMPLETED"],
+      enum: ["PENDING", "IN_PROGRESS", "COMPLETED"],
       default: "PENDING",
     },
+
+    anonymous: {
+      // savoir si on autorise les participants anonymes
+      type: Boolean,
+      default: false,
+    },
+
+    participants: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Users",
+      },
+    ],
+
+    lots: [
+      // les differents lots presents à la vente aux enchere
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Lots",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -34,4 +77,3 @@ const auctionSchema = new mongoose.Schema(
 const AuctionModel = new mongoose.model("Auctions", auctionSchema);
 
 module.exports = { AuctionModel };
-

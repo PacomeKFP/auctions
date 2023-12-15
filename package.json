@@ -4,7 +4,7 @@
   "description": "This is a module That will be use to manage Auctions. It implements the backend side ",
   "main": "main.js",
   "scripts": {
-    "dev":"nodemon main.js",
+    "dev": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,12 +24,19 @@
   },
   "homepage": "https://github.com/PacomeKFP/auctions#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "joi": "^17.11.0",
-    "mongoose": "^8.0.2",
-    "nodemon": "^3.0.2",
+    "mongoose": "^8.0.3",
     "socket.io": "^4.7.2",
+    "uuid": "^9.0.1",
+    "validator": "^13.11.0",
     "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.4",
+    "nodemon": "^3.0.2"
   }
 }
