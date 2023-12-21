@@ -1,4 +1,4 @@
-const { MathUtils } = require("../../utils/maths");
+const { AppBaseError } = require("../../errors/base");
 const { UserModel } = require("../model/user");
 
 class UserRepository {
@@ -18,13 +18,28 @@ class UserRepository {
     return user;
   }
 
-  async confirmParticipation(auctionCode, userId, response) {
-    const user = await this.userModel.findOneAndUpdate(
-      { auction: auctionCode, _id: userId, response: { $not: "CANCELLED" } },
-      { response: response == true ? "YES" : "NO" }
+  async getAllAuctionsAsParicipant(userMail) {
+    const userAuctions = await this.userModel
+      .find({ email: userMail })
+      .select("auction");
+    if (!userAuctions || userAuctions == []) return [];
+    return userAuctions;
+  }
+
+  async confirmParticipation(auctionCode, userId, response, name) {
+    let data = { response: response == true ? "YES" : "NO" };
+    // TODO: isAnonym update not working, correct it
+    if (name) data = { ...data, isAnonym: false, name: name };
+    const user = await this.userModel.updateOne(
+      {
+        auction: auctionCode,
+        _id: userId,
+        response: { $not: { $eq: "CANCELLED" } },
+      },
+      { $set: data }
     );
 
-    if (!user) return false;
+    if (!user) throw new AppBaseError("");
 
     return true;
   }

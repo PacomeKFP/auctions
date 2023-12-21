@@ -3,15 +3,14 @@ const { EErrorCodes } = require("../../../errors/codes");
 
 class ControllerWrapper {
   constructor() {
-    this.repsonse = {}; 
+    this.repsonse = {};
     this.requestStatus = 100;
   }
 
   run(targetController) {
-    return async (req, res) => {  
+    return async (req, res) => {
       try {
-        console.clear()
-        console.log("yo");
+        console.clear();
         this.response = await targetController(req); //{data, status, message}
         this.requestStatus = this.response.status;
         this.repsonse.status = "SUCCESS";
@@ -25,10 +24,11 @@ class ControllerWrapper {
   }
 
   handle(error) {
-    if (error.constructor && error.constructor.name === AppBaseError.name)
-      return (this.response = { ...error.responseBody() });
-
-    this.requestStatus = 400;
+    if (error.constructor && error.constructor.name === AppBaseError.name) {
+      this.status = error.status;
+      this.response = { ...error.responseBody() };
+    }
+    this.requestStatus = this;
     this.response = {
       code: EErrorCodes.UNKNOWN_ERROR,
       message: "An error occured",

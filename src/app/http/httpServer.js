@@ -1,8 +1,12 @@
 const express = require("express");
 const cors = require("cors");
+const xss = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
+
 const { AuctionRouter } = require("./routers/auctionRouter");
 const { BidRouter } = require("./routers/bidRouter");
 const { LotRouter } = require("./routers/lotRouter");
+
 class HttpServer {
   constructor(routePrefix, port) {
     this.routePrefix = routePrefix || "/";
@@ -17,8 +21,11 @@ class HttpServer {
   configureMiddleware() {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
-    this.app.use(cors());
 
+    this.app.use(mongoSanitize());
+    this.app.use(xss());
+
+    this.app.use(cors());
   }
 
   setupRoutes() {

@@ -1,5 +1,7 @@
 // Il s'agit du middleware chargé de si chaque requette respecte le format qu'il faut
 
+const { AppBaseError } = require("../../../errors/base");
+
 /**
  * Intercept and valdate request body
  * @param validationSchema validation schema object
@@ -31,7 +33,7 @@ const getValidationErrors = (validationError) => {
     if (!error.context) continue;
 
     const err = {
-      code: "DATA_FORM_VALIDATION_ERROR",
+      code: AppBaseError.EErrorCodes.VALIDATION_ERROR,
       field: error.context.key,
       value: error.context.value,
       message: error.message,

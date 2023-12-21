@@ -1,3 +1,4 @@
+const { AppBaseError } = require("../../errors/base");
 const {
   GoogleMailService,
 } = require("../../infrastructure/Services/GmailSevice");
@@ -17,6 +18,32 @@ class UsesCases {
     this.mailServices = new GoogleMailService();
   }
 
+  async getUserAuctionList(userMail, role, allowedAuctionStatus) {
+    // role in  [participant : admin, all]
+
+    let userAuctions = {};
+    if (role === "admin" || role === "all")
+      userAuctions.admin = await this.auctionRepository.getAuctionForAdmin(
+        userMail,
+        allowedAuctionStatus
+      );
+    if (role === "participant" || role === "all") {
+      userAuctions.participant = new Array();
+      let auctions = await this.userRepository.getAllAuctionsAsParicipant(
+        userMail
+      );
+      for (const _auction of auctions) {
+        const auction = await this.auctionRepository.getAuctionWithCode(
+          _auction.auction, allowedAuctionStatus
+        );
+        userAuctions.participant.push(auction);
+      }
+    }
+    return userAuctions;
+  }
+
+  
+
   async createAuction(auction) {
     let auctionDoc = auction;
 
@@ -28,6 +55,7 @@ class UsesCases {
     // rediger le contenu du mail
     const mailContent = `Vous etes invité à la vente ${auctionDoc.code}`;
 
+    // save the admin
     // envoyer les invitations aux participants
     for (const participant in auctionDoc.participants)
       await this.mailServices.sendMail(participant, mailContent);
@@ -44,7 +72,7 @@ class UsesCases {
     let lots = [];
     for (const lot of auctionDoc.lots) {
       console.log(lot);
-      const lotDoc = this.createLot(lot);
+      const lotDoc = await this.createLot(lot);
       lots.push(lotDoc._id);
     }
     auctionDoc.lots = lots;
@@ -52,6 +80,7 @@ class UsesCases {
     // creer le lot proprement dit
     return await this.auctionRepository.create(auctionDoc);
   }
+
   createAuctionLink = (auctionCode) =>
     `${this.serverHostForLinks}/${auctionCode}`;
 
@@ -66,7 +95,8 @@ class UsesCases {
     const mails = new MathUtils().shuffle(emails);
     const expectedLen = numberLen(mails.length) + 1;
     const users = [];
-    for (const mail in mails) {
+    for (const mail of mails) {
+      console.log(String(mails.indexOf(mail)).padStart(expectedLen, "0"), mail);
       const user = await this.userRepository.createUser(
         mail,
         anonymous,
@@ -80,17 +110,20 @@ class UsesCases {
     return users;
   }
 
-  async confirmParticipation(auctionCode, userId) {
+  async confirmParticipation(auctionCode, userId, response) {
     // verifier si la personne participe a la vente
     const auction = await this.auctionRepository.checkIfUserInAuction(
       auctionCode,
       userId
     );
-    if (!auction)
-      // l'utilisateur n'a pas le droit
-      return false;
 
-    return await this.userRepository.confirmParticipation(auctionCode, userId);
+    // l'utilisateur n'a pas le droit
+    if (!auction) return false;
+    return await this.userRepository.confirmParticipation(
+      auctionCode,
+      userId,
+      response
+    );
   }
 
   async checkIfUserHaveAccess(lotId, userId) {

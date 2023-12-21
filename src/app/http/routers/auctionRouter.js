@@ -16,17 +16,32 @@ class AuctionRouter {
   }
 
   initializeRoutes() {
-    this.router.get("/", (req, res) => res.send("Hello world from Auctions."));
+    // get all auctions with any filter
+    this.router.get(
+      "/",
+      this.controllerWrapper.run(this.auctionController.getAllAuctions)
+    );
+
+    // get all auctions for a particular user you can provide the auction staus
+    this.router.get(
+      "/user",
+      [formValidationMiddleware(this.forms.getUserAuctionList)],
+      this.controllerWrapper.run(this.auctionController.getAuctionForUser)
+    );
 
     // creer une nouvelle vente
-    this.router.post("/", formValidationMiddleware(this.forms.createAuction));
     this.router.post(
       "/",
+      [formValidationMiddleware(this.forms.createAuction)],
       this.controllerWrapper.run(this.auctionController.createAuction)
     );
 
     // confirmer sa presence
-    this.router.post("/confirm-participation");
+    this.router.post(
+      "/confirm-participation",
+      [formValidationMiddleware(this.forms.confirmParticipation)],
+      this.controllerWrapper.run(this.auctionController.confirmParticipation)
+    );
   }
 
   getRoutes = () => this.router;

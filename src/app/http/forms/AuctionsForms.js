@@ -3,7 +3,7 @@ const Joi = require("joi");
 class AuctionForms {
   constructor() {}
 
-  createAuction = Joi.object({ 
+  createAuction = Joi.object({
     name: Joi.string().trim().min(3).required(),
     description: Joi.string().trim().min(8).required(),
     admin: Joi.object({
@@ -32,6 +32,21 @@ class AuctionForms {
 
     startDate: Joi.date(),
     invitationsClosureDate: Joi.date(),
+  });
+
+  confirmParticipation = Joi.object({
+    auctionCode: Joi.string().trim().guid({ version: "uuidv4" }).required(),
+    userId: Joi.string().trim().hex().length(24).required(),
+    response: Joi.boolean().required(),
+    name: Joi.string().trim().min(3),
+  });
+
+  getUserAuctionList = Joi.object({
+    userMail: Joi.string().trim().email().required(),
+    role: Joi.string().valid("admin", "participant", "all"),
+    allowedAuctionStatus: Joi.array()
+      .items(Joi.string().trim().valid("PENDING", "IN_PROGRESS", "COMPLETED"))
+      .max(3),
   });
 }
 

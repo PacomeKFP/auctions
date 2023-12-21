@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
     },
     isAnonym: {
       type: Boolean,
-      default: false,
     },
     identifier: {
       type: String,
@@ -27,8 +26,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
     auction: {
-      // le code de l'auctionAuctionUseCase
+      // le code de l'auction
       type: String,
+
+      ref: "Auctions",
       required: true,
     },
     response: {

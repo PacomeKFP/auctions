@@ -10,6 +10,22 @@ class AuctionRepository {
     return auctionDoc;
   }
 
+  getAuctionForAdmin = async (adminMail, allowedAuctionStatus) =>
+    await this.auctionModel.find({
+      "admin.email": adminMail,
+      status: {
+        $in: allowedAuctionStatus ?? ["PENDING", "IN_PROGRESS", "COMPLETED"],
+      },
+    });
+
+  getAuctionWithCode = async (auctionCode, allowedAuctionStatus) =>
+    await this.auctionModel.findOne({
+      code: auctionCode,
+      status: {
+        $in: allowedAuctionStatus ?? ["PENDING", "IN_PROGRESS", "COMPLETED"],
+      },
+    });
+
   async checkIfUserInAuction(auctionCode, userId) {
     // s'assurer que l'utilisateur fait bien partie des participants d'une vente
     const auction = await this.auctionModel.find({
@@ -21,7 +37,6 @@ class AuctionRepository {
 
     return auction;
   }
-
 
   async getAuctionWithLotAndUser(lotId, userId) {
     const auction = await this.auctionModel.find({
