@@ -7,6 +7,12 @@ class UserRepository {
     this.userModel = UserModel;
   }
 
+  async getUserWithMail(userMail) {
+    const user = await this.userModel.find({ email: userMail });
+
+    return user;
+  }
+
   async createUser(mail, anonymous, auctionCode, identifier) {
     const user = await this.userModel.create({
       email: mail,

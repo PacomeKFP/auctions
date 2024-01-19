@@ -43,7 +43,7 @@ class AuctionForms {
 
   getUserAuctionList = Joi.object({
     userMail: Joi.string().trim().email().required(),
-    role: Joi.string().valid("admin", "participant", "all"),
+    role: Joi.string().valid("admin", "participant", "all").default("all"),
     allowedAuctionStatus: Joi.array()
       .items(Joi.string().trim().valid("PENDING", "IN_PROGRESS", "COMPLETED"))
       .max(3),

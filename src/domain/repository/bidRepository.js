@@ -25,5 +25,11 @@ class BidRepository {
 
     return bestProposition.amount;
   }
+
+  async getAllBidsForLot(lotId) {
+    const bids = this.bidModel.find({ lot: lotId }).populate("user");
+
+    return bids;
+  }
 }
 module.exports = { BidRepository };

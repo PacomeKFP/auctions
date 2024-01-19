@@ -5,7 +5,6 @@ const {
 const { ControllerWrapper } = require("../controllers/controllerWrapper");
 const { AuctionController } = require("../controllers/auctionController");
 const { UsesCases } = require("../../../domain/usecases/UseCases");
-
 class AuctionRouter {
   constructor() {
     this.router = require("express").Router({ mergeParams: true });
@@ -25,14 +24,20 @@ class AuctionRouter {
     // get all auctions for a particular user you can provide the auction staus
     this.router.get(
       "/user",
-      [formValidationMiddleware(this.forms.getUserAuctionList)],
       this.controllerWrapper.run(this.auctionController.getAuctionForUser)
     );
 
     // creer une nouvelle vente
     this.router.post(
       "/",
-      [formValidationMiddleware(this.forms.createAuction)],
+      [
+        (req, res, next) => {
+          console.log(req.body);
+          next();
+        },
+
+        formValidationMiddleware(this.forms.createAuction),
+      ],
       this.controllerWrapper.run(this.auctionController.createAuction)
     );
 
@@ -41,6 +46,18 @@ class AuctionRouter {
       "/confirm-participation",
       [formValidationMiddleware(this.forms.confirmParticipation)],
       this.controllerWrapper.run(this.auctionController.confirmParticipation)
+    );
+
+    //TODO: Obtenir les informations sur une vente
+    this.router.get(
+      "/:auctionCode",
+      [],
+      this.controllerWrapper.run(this.auctionController.getAuctionWithCode)
+    );
+    this.router.get(
+      "/retro/:auctionCode",
+      [],
+      this.controllerWrapper.run(this.auctionController.getAuctionRetro)
     );
   }
 

@@ -19,12 +19,14 @@ class AuctionRepository {
     });
 
   getAuctionWithCode = async (auctionCode, allowedAuctionStatus) =>
-    await this.auctionModel.findOne({
-      code: auctionCode,
-      status: {
-        $in: allowedAuctionStatus ?? ["PENDING", "IN_PROGRESS", "COMPLETED"],
-      },
-    });
+    await this.auctionModel
+      .findOne({
+        code: auctionCode,
+        status: {
+          $in: allowedAuctionStatus ?? ["PENDING", "IN_PROGRESS", "COMPLETED"],
+        },
+      })
+      .populate("lots participants");
 
   async checkIfUserInAuction(auctionCode, userId) {
     // s'assurer que l'utilisateur fait bien partie des participants d'une vente

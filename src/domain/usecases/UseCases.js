@@ -18,31 +18,63 @@ class UsesCases {
     this.mailServices = new GoogleMailService();
   }
 
+  async getAuctionRetro(auctionCode) {
+    const auctionRetro = await this.getAuctionWithCode(auctionCode);
+
+    auctionRetro.lots = auctionRetro.lots.map(async (lot) => {
+      lot.bids = await this.bidRepository.getAllBidsForLot(lot._id);
+      return lot;
+    });
+
+    return auctionRetro;
+  }
+
+  async getAuctionWithCode(auctionCode) {
+    const auction = await this.auctionRepository.getAuctionWithCode(
+      auctionCode
+    );
+
+    console.log(auction);
+    if (!auction)
+      throw new AppBaseError(
+        AppBaseError.EErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+        "Cette vente n'existe pas",
+        404
+      );
+
+    return auction;
+  }
+
+  async getUserWithMail(userMail) {
+    const user = this.userRepository.getUserWithMail(userMail);
+
+    return user;
+  }
+
   async getUserAuctionList(userMail, role, allowedAuctionStatus) {
     // role in  [participant : admin, all]
 
-    let userAuctions = {};
+    let userAuctions = [];
     if (role === "admin" || role === "all")
-      userAuctions.admin = await this.auctionRepository.getAuctionForAdmin(
+      userAuctions = await this.auctionRepository.getAuctionForAdmin(
         userMail,
         allowedAuctionStatus
       );
     if (role === "participant" || role === "all") {
-      userAuctions.participant = new Array();
       let auctions = await this.userRepository.getAllAuctionsAsParicipant(
         userMail
       );
       for (const _auction of auctions) {
         const auction = await this.auctionRepository.getAuctionWithCode(
-          _auction.auction, allowedAuctionStatus
+          _auction.auction,
+          allowedAuctionStatus
         );
-        userAuctions.participant.push(auction);
+        userAuctions.push(auction);
       }
     }
+
     return userAuctions;
   }
-
-  
 
   async createAuction(auction) {
     let auctionDoc = auction;

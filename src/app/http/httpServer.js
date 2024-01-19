@@ -6,10 +6,11 @@ const mongoSanitize = require("express-mongo-sanitize");
 const { AuctionRouter } = require("./routers/auctionRouter");
 const { BidRouter } = require("./routers/bidRouter");
 const { LotRouter } = require("./routers/lotRouter");
+const { UserRouter } = require("./routers/userRouter");
 
 class HttpServer {
   constructor(routePrefix, port) {
-    this.routePrefix = routePrefix || "/";
+    this.routePrefix = routePrefix || "";
     this.port = port | 3000;
 
     this.app = express();
@@ -29,7 +30,6 @@ class HttpServer {
   }
 
   setupRoutes() {
-    console.log(this.routePrefix + "route pre");
     this.app.get(`${this.routePrefix}`, (req, res) => res.send("Hello World"));
 
     this.app.use(
@@ -38,6 +38,7 @@ class HttpServer {
     );
     this.app.use(`${this.routePrefix}/bids`, new BidRouter().getRoutes());
     this.app.use(`${this.routePrefix}/lots`, new LotRouter().getRoutes());
+    this.app.use(`${this.routePrefix}/users`, new UserRouter().getRoutes());
   }
 
   launchServer() {

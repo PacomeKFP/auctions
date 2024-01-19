@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
       // le code de l'auction
       type: String,
 
-      ref: "Auctions",
+      ref: "Auction.code",
       required: true,
     },
     response: {
@@ -41,6 +41,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const UserModel = new mongoose.model("Users", userSchema);
+const UserModel = new mongoose.model("User", userSchema);
 
 module.exports = { UserModel };

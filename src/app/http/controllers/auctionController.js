@@ -4,8 +4,19 @@ class AuctionController {
   constructor(usesCases) {
     this.useCases = usesCases;
   }
+
+  async getAuctionWithCode(req) {
+    const auction = await new UsesCases().getAuctionWithCode(
+      req.params.auctionCode
+    );
+
+    return {
+      data: auction,
+      status: 200,
+      message: "Les données sur l'enchere",
+    };
+  }
   async createAuction(req) {
-    console.clear();
     const auction = await new UsesCases().createAuction(req.body);
 
     return {
@@ -16,8 +27,15 @@ class AuctionController {
   }
 
   async getAllAuctions(req) {
+    console.log("Getting auctions");
     return {
-      data: [],
+      data: [
+        {
+          code: "12345",
+          name: "test",
+          description: "test",
+        },
+      ],
       status: 200,
       message: "liste des ventes aux encheres",
     };
@@ -25,14 +43,14 @@ class AuctionController {
 
   async getAuctionForUser(req) {
     const userAuctionsList = await new UsesCases().getUserAuctionList(
-      req.body.userMail,
-      req.body.role
+      req.query.userMail,
+      req.query.role
     );
 
     return {
       data: userAuctionsList,
       status: 200,
-      message: "Liste des ventes aux encheres à laquelles",
+      message: "Liste des ventes aux encheres pour l'utilisateur",
     };
   }
 
@@ -46,6 +64,18 @@ class AuctionController {
       data: confirm ? "YES" : "NO",
       status: 200,
       message: "Participation confirmed with success",
+    };
+  }
+
+  async getAuctionRetro(req) {
+    const auctionRetro = await new UsesCases().getAuctionRetro(
+      req.params.auctionCode
+    );
+
+    return {
+      data: auctionRetro,
+      status: 200,
+      message: "La retrospective de la vente au encheres",
     };
   }
 }

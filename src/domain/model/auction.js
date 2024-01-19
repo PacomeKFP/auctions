@@ -57,15 +57,14 @@ const auctionSchema = new mongoose.Schema(
     participants: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "Users",
+        ref: "User",
       },
     ],
 
     lots: [
-      // les differents lots presents à la vente aux enchere
       {
         type: mongoose.Types.ObjectId,
-        ref: "Lots",
+        ref: "Lot",
       },
     ],
   },
@@ -74,6 +73,6 @@ const auctionSchema = new mongoose.Schema(
   }
 );
 
-const AuctionModel = new mongoose.model("Auctions", auctionSchema);
+const AuctionModel = new mongoose.model("Auction", auctionSchema);
 
 module.exports = { AuctionModel };

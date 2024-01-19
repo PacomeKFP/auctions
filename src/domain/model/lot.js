@@ -32,13 +32,13 @@ const lotSchema = new mongoose.Schema(
     bids: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "Bids",
+        ref: "Bid",
       },
     ],
   },
   { timestamps: true }
 );
 
-const LotModel = new mongoose.model("Lots", lotSchema);
+const LotModel = new mongoose.model("Lot", lotSchema);
 
 module.exports = { LotModel };
