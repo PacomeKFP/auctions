@@ -1,0 +1,8 @@
+#history-lots{
+
+}
+@media screen and (max-width: 768px) {
+    #history-lots.col-md-3.p-3 {
+        display: none;
+    }
+}

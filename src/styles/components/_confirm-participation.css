@@ -1,0 +1,83 @@
+
+div#confirm-participation{
+    width: 90vw;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+#confirm-participation h2{
+    text-align: center;
+    margin: 3vh ;
+}
+#confirm-participation #cp-content {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+#confirm-participation #cp-content #cp-form, #cp-lots{
+    padding: 1vh 1vw;
+    width: 45%;
+    height: 90vh;
+    min-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#confirm-participation #cp-content #cp-lots{
+    overflow: scroll;
+}
+
+#confirm-participation #cp-content #cp-form .buttons{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.input-group{
+    max-width: 600px;
+}
+#cp-lots{
+    display: flex;
+    flex-flow: row wrap ;
+    gap: 10px;
+    
+}
+#cp-lots .card-body{
+    width: 300px;
+}
+
+@media screen and (max-width: 800px) {
+    #confirm-participation #cp-content #cp-form, #cp-lots{
+        height: auto;
+        overflow: scroll;
+    }    
+}
+
+#confirm-participation #cp-content #cp-lots::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+	background-color: #F5F5F5;
+	border-radius: 10px;
+}
+
+#confirm-participation #cp-content #cp-lots::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+#confirm-participation #cp-content #cp-lots::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #FFF;
+	background-image: -webkit-gradient(linear,
+									   40% 0%,
+									   75% 84%,
+									   from(#416c9c),
+									   to(#196b91),
+									   color-stop(.6,#54b2de))
+}
