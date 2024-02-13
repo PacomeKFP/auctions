@@ -17,10 +17,9 @@ export const BidsOnLot = ({ bids, currency }: { bids: BidInterface<string>[], cu
             })}
           </h5>
           <h5 className="col-3">
-            {/* TODO: Afficher la date avec l'huere aussi */}
             {new Intl.DateTimeFormat("fr-FR", {
               dateStyle: "medium",
-              timeStyle: "long",
+              timeStyle: "medium",
             }).format(new Date(bid.date))}
           </h5>
         </Row>

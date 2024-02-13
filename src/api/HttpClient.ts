@@ -124,6 +124,7 @@ export default class HttpClient {
             data.lots = data.lotWithoutRanks.map((lot: LotInterface, index) => {
               lot.rank = index + 1;
               delete lot.chosen;
+              delete lot.id;
 
               return lot;
             });
@@ -135,7 +136,7 @@ export default class HttpClient {
               data.admin.name.substring(0, 1).toUpperCase() +
               data.admin.name.substring(1);
 
-            //S'assurer que l'admin ne soit pas ajouté comme participaant
+            //S'assurer que l'admin ne soit pas ajouté comme participant
             data.participants = (data.participants as Array<string>).filter(
               (element) => element !== data.admin.email
             );

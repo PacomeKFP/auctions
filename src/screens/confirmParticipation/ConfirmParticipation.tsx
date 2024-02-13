@@ -1,7 +1,7 @@
 import { useLoaderData, useParams } from "react-router-dom";
 import { SimpleArticleContentLoader } from "../../components/common/ContentLoaderTemplates";
 import AuctionsLots from "../../components/participation/AuctionsLots";
-import ParticpationForm from "../../components/participation/ParticipationForm";
+import ParticipationForm from "../../components/participation/ParticipationForm";
 import { AuctionInterface } from "../../interfaces/auction";
 
 export default function ConfirmParticipationScreen() {
@@ -31,7 +31,7 @@ export default function ConfirmParticipationScreen() {
             </p>
 
             <div id="cp-content">
-              <ParticpationForm
+              <ParticipationForm
                 userId={userId}
                 auctionName={auction.name}
                 auctionDescription={auction.description}

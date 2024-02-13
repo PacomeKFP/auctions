@@ -34,10 +34,6 @@ export default function AuctionForm({ userMail }: { userMail: string }) {
   const [auction, setAuction] = useState({ ...emptyAuction } as AuctionInterface<string[]>);
   const [lots, setLots] = useState<Array<LotInterface & ItemInterface>>([]);
 
-
-
-
-
   const updateElementInAuction = (key: string, value: string | number | Date | boolean) => {
     if (!key.includes("."))
       return setAuction({ ...auction, [key]: value });
@@ -75,19 +71,18 @@ export default function AuctionForm({ userMail }: { userMail: string }) {
       ...auction, lotWithoutRanks: [...lots],
     };
 
-    console.log("auction before", _auction);
+    const promise = HttpClient.createAuction(_auction)
 
-    HttpClient.createAuction(_auction).then((response) => {
-      //TODO: handle this correctly
-      if (response) alert("La vente a ete crée avec succes");
-      else alert("erreur lors de la creation de la vente");
-    });
-
+    toast.promise(promise, {
+      loading: "Creation de la vente, patientez ....",
+      success: "La vente a été crée avec success",
+      error: "Une erreur est survenue pendant la création",
+    })
   };
 
   const handleRemoveLot = (position: number) => {
     alert("removing lot");
-    const l = lots.filter((l, index) => index !== position);
+    const l = lots.filter((l) => lots.indexOf(l) !== position);
     setLots(l);
   };
   const handleAddLot = (lot: LotInterface) => {

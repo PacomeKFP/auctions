@@ -2,7 +2,8 @@ import { useState } from "react";
 import HttpClient from "../../api/HttpClient";
 import { ConfirmParticipationInterface } from "../../interfaces/RequestsInterfaces";
 import { DateString } from "../../interfaces/global";
-export default function ParticpationForm({
+import { toast } from "sonner";
+export default function ParticipationForm({
   userId,
   auctionName,
   auctionDescription,
@@ -21,14 +22,12 @@ export default function ParticpationForm({
     participantsCount: number,
   }) {
   const [name, setName] = useState<string | undefined>(undefined);
-  const [responseSubmited, setResponseSubmited] = useState(false);
 
   const submitParticipation = (response: boolean) => {
-    if (anonymous && !name) {
-      //TODO handle this correctly
-      console.error("Veuillez renseigner votre nom");
-      return;
-    }
+
+    if (anonymous && !name)
+      return toast.error("Veuillez renseigner votre nom");
+
 
     const data: ConfirmParticipationInterface = {
       auctionCode: window.location.pathname.split("/")[2],
@@ -37,20 +36,20 @@ export default function ParticpationForm({
       name,
     };
 
-    HttpClient.confirmParticipation(data).then((response) => {
-      // TODO handle this correctly with swal
-      if (!response)
-        return alert("Erreur lors de la soumission de votre reponse");
+    const promise = HttpClient.confirmParticipation(data)
 
-      //TODO: navigate to the dashboard ?
-      alert("votre reponse a eté transmise avec succes");
-      setResponseSubmited(true);
-    });
+    toast.promise(promise, {
+      loading: "Creation de la vente, patientez ....",
+      success: () => {
+        // TODO: navigate to dashboard 
+        return "La vente a été crée avec success"
+      },
+      error: "Une erreur est survenue",
+    })
+
   };
 
-  return responseSubmited ? (
-    <div>Votre reponse a eté soumise avec succes</div>
-  ) : (
+  return (
     <div id="cp-form">
       <h2 className="cp-auction-name mb-3">{auctionName}</h2>
       <br />
@@ -103,7 +102,7 @@ export default function ParticpationForm({
           onClick={() => submitParticipation(false)}
           className="btn btn-outline-danger"
         >
-          Decliner l&apos;invitation
+          Décliner l&apos;invitation
         </button>
         <button
           onClick={() => submitParticipation(true)}

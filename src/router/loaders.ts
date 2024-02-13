@@ -8,7 +8,7 @@ export const historyLoader = async ({
 }: {
   params: Readonly<Params<string>>;
 }) => {
-  if (!params.auctionCode) return toast.error("aucune enchère selectionne");
+  if (!params.auctionCode) return toast.error("Aucune enchère sélectionnée");
   const promise = HttpClient.getAuctionWithCode(params.auctionCode!);
   const response = await promise;
   toast.promise(promise, {
@@ -25,7 +25,7 @@ export const auctionScreenLoader = async ({
 }: {
   params: Readonly<Params<string>>;
 }) => {
-  if (!params.auctionCode) return toast.error("Aucune enchère selectionne");
+  if (!params.auctionCode) return toast.error("Aucune enchère sélectionnée");
   const promise = HttpClient.getCurrentLotForAuction(params.auctionCode!);
 
   toast.promise(promise, {
@@ -45,7 +45,7 @@ export const confirmParticipationScreenLoader = async ({
 }: {
   params: Readonly<Params<string>>;
 }) => {
-  if (!params.auctionCode) return toast.error("Aucune enchère selectionne");
+  if (!params.auctionCode) return toast.error("Aucune enchère sélectionnée");
   const promise = HttpClient.getAuctionWithCode(params.auctionCode);
 
   toast.promise(promise, {
@@ -69,7 +69,7 @@ export const dashboardScreenDataLoader = async () => {
 
   toast.promise(promise, {
     loading: "Chargement...",
-    success: "Encheres chargées avec success",
+    success: "Enchères chargées avec success",
     error: "Une erreur est survenue",
   });
 
