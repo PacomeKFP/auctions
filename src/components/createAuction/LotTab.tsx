@@ -12,11 +12,14 @@ export type LotTabProps = {
 
 export const LotTab = ({ handleAddLot, lots, setLots, handleRemoveLot }: LotTabProps): React.JSX.Element => {
 
-  const emptylot: LotInterface = { name: "", description: "", bounty: 0, awardDeadline: 15 }
-  const [lot, setLot] = useState({ ...emptylot });
+  const emptyLot: LotInterface = { name: "", description: "", bounty: 0, awardDeadline: 15 }
+  const [lot, setLot] = useState({ ...emptyLot });
 
   const updateElementInLot = (key: string, value: string | number) => {
     setLot({ ...lot, [key]: value });
+    if (key === "bounty" || key === "awardDeadline")
+      setLot({ ...lot, [key]: Number(value) });
+
   }
 
   return <>
@@ -33,7 +36,6 @@ export const LotTab = ({ handleAddLot, lots, setLots, handleRemoveLot }: LotTabP
       required
       as={"textarea"}
       rows={4}
-      value={lot.description}
       onChange={(e) => updateElementInLot("description", e.target.value)}
       placeholder="La description du lot"
       className="mb-3"
@@ -51,8 +53,7 @@ export const LotTab = ({ handleAddLot, lots, setLots, handleRemoveLot }: LotTabP
 
           required
           type="number"
-          value={lot.bounty}
-          onChange={(e) => updateElementInLot("bounty", e.target.value)}
+          onChange={(e) => updateElementInLot("bounty", Number(e.target.value))}
           placeholder="Mise à prix"
         />
       </Form.Group>
@@ -75,16 +76,16 @@ export const LotTab = ({ handleAddLot, lots, setLots, handleRemoveLot }: LotTabP
           placeholder="Temps d'adjudication"
         />
       </Form.Group>
-      
+
     </Row>
     <Button
 
-        onClick={() => handleAddLot(lot)}
-        variant={"outline-info"}
-        className="ms-2"
-      >
-        Ajouter
-      </Button>
+      onClick={() => handleAddLot(lot)}
+      variant={"outline-info"}
+      className="ms-2"
+    >
+      Ajouter
+    </Button>
 
     <ListGroup className="mt-3">
       <ReactSortable list={lots} setList={setLots}>

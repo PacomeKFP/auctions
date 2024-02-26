@@ -2,6 +2,14 @@ export default class Utils {
   static defaultCurrency = "XAF";
   static lang = "fr-FR";
 
+  static removeNulls<T>(array: Array<T | null>) {
+    let index = array.indexOf(null);
+    while (index >= 0) {
+      array.splice(index, 1);
+      index = array.indexOf(null);
+    }
+  }
+
   /**
    * Formats a given number of seconds into a human-readable time format.
    *

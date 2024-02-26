@@ -1,4 +1,4 @@
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import ContextsProvider from "./contexts/ContextProvider";
 import AppRouter from "./router/router";
 import Utils from "./utils/utils";
@@ -9,6 +9,7 @@ function App() {
    */
 
   Utils.lang = "fr-FR";
+  toast.info(`Connecté en tant que ${import.meta.env.VITE_CURRENT_USER_MAIL}`)
   return (
     <div id="app">
       <ContextsProvider>

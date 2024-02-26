@@ -46,7 +46,7 @@ export default function AuctionListItem({ auction, userMail }: { auction: Auctio
       </Card.Body>
       <Card.Footer>
         <Stack direction="horizontal" gap={3}>
-          <Badge pill bg={getBgColor(auction.status)}>
+          <Badge pill bg={getBgColor(auction.status!)}>
             {auction.status}
           </Badge>
           <Badge bg="info" pill>

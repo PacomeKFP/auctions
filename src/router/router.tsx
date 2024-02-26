@@ -7,7 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { CenteredContentLoader } from "../components/common/ContentLoaderTemplates";
-import { auctionScreenLoader, dashboardScreenDataLoader, historyLoader } from "./loaders";
+import { auctionScreenLoader, confirmParticipationScreenLoader, dashboardScreenDataLoader, historyLoader } from "./loaders";
 const DashboardScreen = lazy(() => import("../screens/dashboard/Dashboard"));
 const HistoryScreen = lazy(() => import("../screens/history/History"));
 const CreateAuctionScreen = lazy(() => import("../screens/create/CreateAuction"));
@@ -34,6 +34,7 @@ export default function AppRouter() {
       {/* interface pour confirmer sa participation à une enchere */}
       <Route
         path="/confirm/:auctionCode/:userId"
+        loader={confirmParticipationScreenLoader}
         element={<ConfirmParticipationScreen />}
       />
 

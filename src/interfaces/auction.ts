@@ -11,14 +11,15 @@ export interface AuctionInterface<T extends ParticipantType> {
   admin: AdminInfo;
   code?: string;
   currency: string;
-  status: AuctionStatus;
+  userId?: string;
+  status?: AuctionStatus;
   anonymous: boolean;
   participants: T;
   lots: LotInterface[];
   lotWithoutRanks?: LotInterface[];
   readonly createdAt?: DateString;
   readonly updatedAt?: DateString;
-  response?:UserResponseOnAuction,
+  response?: UserResponseOnAuction;
 
   [key: string]:
     | string
@@ -32,7 +33,7 @@ export interface AuctionInterface<T extends ParticipantType> {
     | AdminInfo;
 }
 
-export type UserResponseOnAuction = "PENDING"| "YES"| "NO"| "CANCELLED";
+export type UserResponseOnAuction = "PENDING" | "YES" | "NO" | "CANCELLED";
 
 type ParticipantType = string[] | UserInterface[] | number;
 export type AuctionStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED";

@@ -7,10 +7,13 @@ import { FilterContext } from "../../contexts/FilterContext.tsx";
 import { UserContext } from "../../contexts/UserContext.tsx";
 import { AuctionInterface } from "../../interfaces/auction.ts";
 import { UserInterface } from "../../interfaces/user.ts";
+import Utils from "../../utils/utils.ts";
 const DashboardScreen = () => {
   const { currentUser } = useContext(UserContext)!;
   const { currentTags, searchText } = useContext(FilterContext)!;
   const auctions = useLoaderData() as AuctionInterface<UserInterface[]>[]
+
+  Utils.removeNulls(auctions)
 
 
   const searchFilter = (auction: AuctionInterface<UserInterface[]>) => {
@@ -32,7 +35,7 @@ const DashboardScreen = () => {
       <AuctionList
         auctions={auctions.filter(
           (auction) =>
-            searchFilter(auction) && currentTags.includes(auction.status)
+            searchFilter(auction) && currentTags.includes(auction.status!)
         )}
         userMail={currentUser}
       />

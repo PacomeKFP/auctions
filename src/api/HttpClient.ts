@@ -1,7 +1,6 @@
-import axios, { AxiosRequestTransformer } from "axios";
-import { AuctionInterface } from "../interfaces/auction";
-import { LotInterface } from "../interfaces/lot";
+import axios from "axios";
 import { ConfirmParticipationInterface } from "../interfaces/RequestsInterfaces";
+import { AuctionInterface } from "../interfaces/auction";
 
 export default class HttpClient {
   static serverURL = "http://localhost:3000/api";
@@ -46,39 +45,42 @@ export default class HttpClient {
       });
   }
 
-  static getUserWithMail(userMail: string) {
+  static getUserWithMail<T extends { _id: string; auction: string }>({
+    userMail,
+  }: {
+    userMail: string;
+  }): Promise<Array<T>> {
     return HttpClient.axiosInstance
-      .get(`/users`, {
-        params: { userMail },
-      })
+      .get(`/users/${userMail}`)
       .then((response) => {
-        if (response.status === 200) return response.data;
+        console.log("response ", response);
+        if (response.status === 200) return Promise.resolve(response.data.data);
         else {
           console.log(response.data);
-          return null;
+          return Promise.reject(response.data);
         }
       })
       .catch((error) => {
-        console.log(error);
-        return null;
+        console.error(error.response.data.errors[0]);
+        return Promise.reject(error);
       });
   }
 
-  static getAllAuctionsForUser(userMail: string) {
+  static async getAllAuctionsForUser<
+    T extends { data: Array<AuctionInterface<string[]> | null> }
+  >({ userMail }: { userMail: string }): Promise<T> {
     return HttpClient.axiosInstance
-      .get(`/auctions/user`, {
-        params: { userMail, role: "all" },
-      })
+      .get(`/auctions/user/${userMail}`)
       .then((response) => {
-        if (response.status === 200) return response.data;
+        if (response.status === 200) return Promise.resolve(response.data);
         else {
           console.log(response.data);
-          return null;
+          return Promise.reject(response.data);
         }
       })
       .catch((error) => {
-        console.log(error);
-        return null;
+        console.error(error.response.data.errors[0]);
+        return Promise.reject(error);
       });
   }
 
@@ -102,59 +104,33 @@ export default class HttpClient {
     return HttpClient.axiosInstance
       .get(`/auctions/${auctionCode}`)
       .then((response) => {
-        if (response.status === 200) return response.data;
+        if (response.status === 200) return Promise.resolve(response.data);
         else {
           console.log(response.data);
-          return null;
+          return Promise.reject(response.data);
         }
       })
       .catch((error) => {
-        console.log(error);
-        return null;
+        console.error(error.response.data.errors[0]);
+        return Promise.reject(error);
       });
   }
 
-  static createAuction(auctionData: AuctionInterface<string[]>) {
+  static async createAuction<T extends { data: unknown }>(
+    auctionData: AuctionInterface<string[]>
+  ): Promise<T> {
     return HttpClient.axiosInstance
-      .post(`/auctions`, auctionData, {
-        transformRequest: [
-          // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-          (data: AuctionInterface<string[]>, headers) => {
-            if (!data.lotWithoutRanks) return;
-            data.lots = data.lotWithoutRanks.map((lot: LotInterface, index) => {
-              lot.rank = index + 1;
-              delete lot.chosen;
-              delete lot.id;
-
-              return lot;
-            });
-
-            delete data.lotWithoutRanks;
-
-            // S'assurer que le nom de l'admin commence par une majuscule
-            data.admin.name =
-              data.admin.name.substring(0, 1).toUpperCase() +
-              data.admin.name.substring(1);
-
-            //S'assurer que l'admin ne soit pas ajouté comme participant
-            data.participants = (data.participants as Array<string>).filter(
-              (element) => element !== data.admin.email
-            );
-            return data;
-          },
-          ...(axios.defaults.transformRequest as AxiosRequestTransformer[]),
-        ],
-      })
+      .post(`/auctions`, auctionData)
       .then((response) => {
-        if (response.status === 201) return response.data;
+        if (response.status === 201) return Promise.resolve(response.data);
         else {
           console.log(response.data);
-          return null;
+          return Promise.reject(response.data);
         }
       })
       .catch((error) => {
-        console.log(error);
-        return null;
+        console.error(error.response.data.errors[0]);
+        return Promise.reject(error);
       });
   }
 }
