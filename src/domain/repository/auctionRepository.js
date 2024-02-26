@@ -10,6 +10,21 @@ class AuctionRepository {
     return auctionDoc;
   }
 
+  closeAuction = async (auctionCode) => {
+    const auction = await this.auctionModel.findOneAndUpdate(
+      { code: auctionCode, status: { $in: ["IN_PROGRESS"] } },
+      { status: "COMPLETED" }
+    );
+
+    if (!auction)
+      throw new AppBaseError(
+        AppBaseError.EErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+        "Auction not found",
+        404
+      );
+
+    return auction;
+  };
   getAuctionForAdmin = async (adminMail, allowedAuctionStatus) =>
     await this.auctionModel.find({
       "admin.email": adminMail,

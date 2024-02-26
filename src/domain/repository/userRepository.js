@@ -24,7 +24,7 @@ class UserRepository {
     return user;
   }
 
-  async getAllAuctionsAsParicipant(userMail) {
+  async getAllAuctionsAsParticipant(userMail) {
     const userAuctions = await this.userModel
       .find({ email: userMail })
       .select("auction");

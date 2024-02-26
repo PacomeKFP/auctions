@@ -22,7 +22,7 @@ class AuctionController {
     return {
       data: auction,
       status: 201,
-      message: "aVente crée avec success",
+      message: "Vente crée avec success",
     };
   }
 
@@ -43,9 +43,11 @@ class AuctionController {
 
   async getAuctionForUser(req) {
     const userAuctionsList = await new UsesCases().getUserAuctionList(
-      req.query.userMail,
-      req.query.role
+      req.params.userMail,
+      "all"
     );
+
+    console.log(req)
 
     return {
       data: userAuctionsList,

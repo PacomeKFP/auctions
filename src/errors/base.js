@@ -8,6 +8,7 @@ class AppBaseError extends Error {
     UNAUTHENTICATED_USER_ERROR: "UNAUTHENTICATED_USER_ERROR",
     INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
     UNKNOWN_ERROR: "UNKNOWN_ERROR",
+    BAD_REQUEST_ERROR: "BAD_REQUEST_ERROR",
   };
   constructor(code, message, status) {
     super(message);

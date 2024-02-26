@@ -23,7 +23,7 @@ class AuctionRouter {
 
     // get all auctions for a particular user you can provide the auction staus
     this.router.get(
-      "/user",
+      "/user/:userMail",
       this.controllerWrapper.run(this.auctionController.getAuctionForUser)
     );
 

@@ -1,6 +1,6 @@
 const {
   GoogleMailService,
-} = require("../src/infrastructure/Services/GmailSevice");
+} = require("../src/infrastructure/Services/Mail/GmailSevice");
 const { AuctionRepository } = require("../src/domain/repository/auctionRepository");
 const { LotRepository } = require("../src/domain/repository/lotRepository");
 const { UserRepository } = require("../src/domain/repository/userRepository");
@@ -21,9 +21,6 @@ class AuctionUseCase {
 
     // creer le code de la vente
     auctionDoc["code"] = uuidv4();
-
-
-    // TODO: generer le lien de la vente
 
     // rediger le contenu du mail
     const mailContent = `Vous etes invité à la vente ${auctionDoc.code}`;

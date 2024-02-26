@@ -27,7 +27,22 @@ class BidRepository {
   }
 
   async getAllBidsForLot(lotId) {
-    const bids = this.bidModel.find({ lot: lotId }).populate("user");
+    const bids = await this.bidModel.aggregate([
+      {
+        $sort: { createdAt: -1, amount: -1 },
+      },
+      {
+        $match: { lot: lotId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+    ]);
 
     return bids;
   }

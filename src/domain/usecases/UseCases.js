@@ -1,7 +1,7 @@
 const { AppBaseError } = require("../../errors/base");
 const {
   GoogleMailService,
-} = require("../../infrastructure/Services/GmailSevice");
+} = require("../../infrastructure/Services/Mail/GmailSevice");
 const { MathUtils } = require("../../utils/maths");
 const { AuctionRepository } = require("../repository/auctionRepository");
 const { BidRepository } = require("../repository/bidRepository");
@@ -18,6 +18,90 @@ class UsesCases {
     this.mailServices = new GoogleMailService();
   }
 
+  async closeAuction(auctionCode) {
+    const auction = await this.auctionRepository.closeAuction(auctionCode);
+    return auction;
+  }
+
+  async openLot(lotId) {
+    const lot = await this.lotRepository.openLot(lotId);
+    return lot;
+  }
+
+  async closeLot(lotId) {
+    const lot = await this.lotRepository.closeLot(lotId);
+    return lot;
+  }
+
+  async getCurrentLotForAuction(auctionCode) {
+    const auction = await this.auctionRepository.getAuctionWithCode(
+      auctionCode
+    );
+    console.log("the fetched auction", auction);
+    if (!auction)
+      throw new AppBaseError(
+        AppBaseError.EErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+        "Cette vente n'existe pas",
+        404
+      );
+
+    if (["PENDING", "COMPLETED"].includes(auction.status))
+      throw new AppBaseError(
+        AppBaseError.EErrorCodes.BAD_REQUEST_ERROR,
+        "Cette vente n'est pas encore ouverte ou alors elle est terminée",
+        400
+      );
+
+    let currentLot;
+
+    for (const lot of auction.lots)
+      if (lot.status === "ON_SALE") currentLot = { ...lot };
+
+    // aucun lot n'est en vente pourtant la vente est en cours, alors on va mettre le lot ayant le plus petit rank en vente
+    if (!currentLot && auction.status === "IN_PROGRESS") {
+      currentLot = auction.lots
+        .filter((lot) => lot.status === "PENDING")
+        .sort((a, b) => a.rank - b.rank)[0];
+
+      // aucun lot n'est en attente, ni en cours de vente,  donc on ferme la vente aux encheres
+      if (!currentLot) {
+        // fermer la vente
+        closeAuction(auctionCode);
+        throw new AppBaseError(
+          AppBaseError.EErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+          "Tous les lots de cette vente sont deja vendus - La vente est terminée",
+          400
+        );
+      }
+
+      // il y a un lot qui n'est pas en cours de vente et qui a le meilleur ranking
+      // on va donc mettre ce lot en vente
+      console.log("Opening a new lot");
+      currentLot = await this.openLot(currentLot._id);
+      return currentLot;
+    }
+    // on a trouvé un lot qui est ouvert
+
+    // reccuperer les differentes encheres sur le lot
+    currentLot.bids = await this.bidRepository.getAllBidsForLot(currentLot._id);
+
+    // si la derniere enchere a deja ecoulé son temps d'adjudication, alors, on valide et on ferme le lot
+    if (
+      currentLot.bids.length > 0 &&
+      MathUtils.isAfter(new Date(currentLot.bids[0].createdAt), new Date())
+    ) {
+      console.log("Closing a lot");
+      currentLot = await this.closeLot(currentLot._id);
+
+      // cette instruction permettra d'ouvir le prochain lot ou de fermermer l'enchere si necessaire
+      return await this.getCurrentLotForAuction(auctionCode);
+    }
+
+    console.debug("before");
+    console.log("the current lot", currentLot);
+    console.debug("after");
+    return currentLot;
+  }
   async getAuctionRetro(auctionCode) {
     const auctionRetro = await this.getAuctionWithCode(auctionCode);
 
@@ -61,17 +145,17 @@ class UsesCases {
         allowedAuctionStatus
       );
     if (role === "participant" || role === "all") {
-      let auctions = await this.userRepository.getAllAuctionsAsParicipant(
+      let auctions = await this.userRepository.getAllAuctionsAsParticipant(
         userMail
       );
       for (const _auction of auctions) {
         const auction = await this.auctionRepository.getAuctionWithCode(
           _auction.auction,
           allowedAuctionStatus
-        );
-        userAuctions.push(auction);
+          );
+          userAuctions.push(auction);
+        }
       }
-    }
 
     return userAuctions;
   }
@@ -79,18 +163,8 @@ class UsesCases {
   async createAuction(auction) {
     let auctionDoc = auction;
 
-    // creer le code de la vente
+    // créer le code de la vente
     auctionDoc["code"] = uuidv4();
-
-    // TODO: generer le lien de la vente
-
-    // rediger le contenu du mail
-    const mailContent = `Vous etes invité à la vente ${auctionDoc.code}`;
-
-    // save the admin
-    // envoyer les invitations aux participants
-    for (const participant in auctionDoc.participants)
-      await this.mailServices.sendMail(participant, mailContent);
 
     // enregistrer tous les participants
     const users = await this.registerUsers(
@@ -99,13 +173,21 @@ class UsesCases {
       auctionDoc.code
     );
     auctionDoc.participants = users;
+    // envoyer les invitations aux participants
+    for (const user of users)
+      await GoogleMailService.sendMail({
+        to: user.email,
+        auctionCode: auctionDoc.code,
+        auctionName: auctionDoc.name,
+        adminName: auctionDoc.admin.name,
+        adminEmail: auctionDoc.admin.email,
+        userId: user._id,
+      });
 
     // creer les differents lots
     let lots = [];
     for (const lot of auctionDoc.lots) {
-      console.log(lot);
       const lotDoc = await this.createLot(lot);
-      lots.push(lotDoc._id);
     }
     auctionDoc.lots = lots;
 

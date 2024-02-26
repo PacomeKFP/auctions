@@ -1,3 +1,4 @@
+const { AppBaseError } = require("../../errors/base");
 const { LotModel } = require("../model/lot");
 
 class LotRepository {
@@ -11,6 +12,32 @@ class LotRepository {
     if (!lot) console.log("Error occured when creating Lot");
     // TODO:  errors Handlings
 
+    return lot;
+  }
+
+  async openLot(lotId) {
+    const lot = await this.lotModel.findById(lotId);
+    if (!lot)
+      throw new AppBaseError(
+        AppBaseError.EErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+        "Le lot que vous voulez ouvrir n'existe pas",
+        404
+      );
+    lot.status = "ON_SALE";
+    await lot.save();
+    return lot;
+  }
+
+  async closeLot(lotId) {
+    const lot = await this.lotModel.findById(lotId);
+    if (!lot)
+      throw new AppBaseError(
+        AppBaseError.EErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+        "Le lot que vous voulez ouvrir n'existe pas",
+        404
+      );
+    lot.status = "CLOSED";
+    await lot.save();
     return lot;
   }
 

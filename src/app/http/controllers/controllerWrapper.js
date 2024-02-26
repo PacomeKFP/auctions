@@ -27,13 +27,32 @@ class ControllerWrapper {
       this.status = error.status;
       this.response = { ...error.responseBody() };
       return;
+    } else if (error.errno === -3008) {
+      this.status = 500;
+      this.response = {
+        code: EErrorCodes.SMTP_ERROR,
+        message: "An error occurred when sending mail invitations",
+        e: error,
+      };
+    } else if (error.codeName) {
+      this.status = 500;
+      this.message = "Internal Server error";
+
+      this.response = {
+        code: EErrorCodes.INTERNAL_SERVER_ERROR,
+        message: "Internal Server error",
+        e: error,
+      };
+
+      return;
+    } else {
+      this.status = 400;
+      this.response = {
+        code: EErrorCodes.UNKNOWN_ERROR,
+        message: "An error occured",
+        e: error,
+      };
     }
-    this.status = 400;
-    this.response = {
-      code: EErrorCodes.UNKNOWN_ERROR,
-      message: "An error occured",
-      e: error,
-    };
   }
 }
 
